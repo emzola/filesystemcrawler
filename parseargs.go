@@ -1,11 +1,14 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"io"
 )
+
+func printUsage(w io.Writer, args []string) {
+	parseArgs(w, args)
+}
 
 func parseArgs(w io.Writer, args []string) (*config, error) {
 	c := &config{}
@@ -34,7 +37,8 @@ Usage of %s: <options> [name]`
 	}
 
 	if fs.NArg() != 0 {
-		return c, errors.New("positional arguments must not be specified")
+		printUsage(w, []string{"-h"})
+		return c, fmt.Errorf("error: %s", "positional arguments must not be specified")
 	}
 
 	return c, nil
