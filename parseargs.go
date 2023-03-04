@@ -19,6 +19,7 @@ func parseArgs(w io.Writer, args []string) (*config, error) {
 	fs.StringVar(&c.ext, "ext", "", "File extension to filter out")
 	fs.Int64Var(&c.size, "size", 0, "Minimum file size")
 	fs.BoolVar(&c.list, "list", false, "List files only")
+	fs.BoolVar(&c.del, "del", false, "Delete files")
 
 	fs.Usage = func() {
 		usageMessage := `

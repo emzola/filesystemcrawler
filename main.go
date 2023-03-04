@@ -10,6 +10,7 @@ type config struct {
 	size int64
 	list bool
 	root string
+	del  bool
 }
 
 func main() {

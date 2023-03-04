@@ -20,6 +20,10 @@ func run(w io.Writer, c *config) error {
 			return listFile(w, path)
 		}
 
+		if c.del {
+			return delFile(path)
+		}
+
 		return listFile(w, path)
 	})
 }
