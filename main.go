@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -11,6 +12,7 @@ type config struct {
 	list bool
 	root string
 	del  bool
+	wLog io.Writer
 }
 
 func main() {
