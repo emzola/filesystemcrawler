@@ -107,7 +107,7 @@ func TestRunDelExtension(t *testing.T) {
 			})
 			defer cleanup()
 
-			tc.c.wLog = &logBuffer
+			tc.c.out = &logBuffer
 			tc.c.root = tempDir
 
 			if err := run(&buffer, &tc.c); err != nil {

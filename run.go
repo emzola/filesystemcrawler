@@ -8,7 +8,8 @@ import (
 )
 
 func run(w io.Writer, c *config) error {
-	delLogger := log.New(c.wLog, "DELETED FILE: ", log.LstdFlags)
+	var delLogger *log.Logger
+
 	return filepath.Walk(c.root, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -22,7 +23,17 @@ func run(w io.Writer, c *config) error {
 			return listFile(w, path)
 		}
 
+		if len(c.logFile) != 0 {
+			file, err := writeToLog(c)
+			if err != nil {
+				return err
+			}
+			c.out = file
+			defer file.Close()
+		}
+
 		if c.del {
+			delLogger = log.New(c.out, "DELETED FILE: ", log.LstdFlags)
 			return delFile(path, delLogger)
 		}
 

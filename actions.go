@@ -33,3 +33,11 @@ func delFile(path string, delLogger *log.Logger) error {
 	delLogger.Println(path)
 	return nil
 }
+
+func writeToLog(c *config) (*os.File, error) {
+	file, err := os.OpenFile(c.logFile, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+	return file, nil
+}

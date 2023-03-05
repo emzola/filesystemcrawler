@@ -7,12 +7,13 @@ import (
 )
 
 type config struct {
-	ext  string
-	size int64
-	list bool
-	root string
-	del  bool
-	wLog io.Writer
+	ext     string
+	size    int64
+	list    bool
+	root    string
+	del     bool
+	logFile string
+	out     io.Writer
 }
 
 func main() {
