@@ -14,6 +14,7 @@ type config struct {
 	del     bool
 	logFile string
 	out     io.Writer
+	archive string
 }
 
 func main() {

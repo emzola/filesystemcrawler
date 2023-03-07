@@ -32,6 +32,12 @@ func run(w io.Writer, c *config) error {
 			defer file.Close()
 		}
 
+		if len(c.archive) != 0 {
+			if err := archiveFile(c.archive, c.root, path); err != nil {
+				return err
+			}
+		}
+
 		if c.del {
 			delLogger = log.New(c.out, "DELETED FILE: ", log.LstdFlags)
 			return delFile(path, delLogger)

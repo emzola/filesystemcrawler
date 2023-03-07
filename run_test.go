@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -133,6 +134,82 @@ func TestRunDelExtension(t *testing.T) {
 			if len(lines) != expLogLines {
 				t.Errorf("Expected %d log lines, got %d instead\n", expLogLines, lines)
 			}
+		})
+	}
+}
+
+func TestRunArchive(t *testing.T) {
+	testCases := []struct {
+		name         string
+		c            config
+		extNoArchive string
+		nArchive     int
+		nNoArchive   int
+	}{
+		{
+			name:         "ArchiveExtensionNoMatch",
+			c:            config{ext: ".log"},
+			extNoArchive: ".gz",
+			nArchive:     0,
+			nNoArchive:   10,
+		},
+		{
+			name:         "ArchiveExtensionMatch",
+			c:            config{ext: ".log"},
+			extNoArchive: "",
+			nArchive:     10,
+			nNoArchive:   0,
+		},
+		{
+			name:         "ArchiveExtensionMixed",
+			c:            config{ext: ".log"},
+			extNoArchive: ".gz",
+			nArchive:     5,
+			nNoArchive:   5,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var buffer bytes.Buffer
+
+			tempDir, cleanup := createTempDir(t, map[string]int{
+				tc.c.ext:        tc.nArchive,
+				tc.extNoArchive: tc.nNoArchive,
+			})
+			defer cleanup()
+
+			archiveDir, cleanupArchive := createTempDir(t, nil)
+			defer cleanupArchive()
+
+			tc.c.archive = archiveDir
+			tc.c.root = tempDir
+
+			if err := run(&buffer, &tc.c); err != nil {
+				t.Fatal(err)
+			}
+
+			pattern := filepath.Join(tempDir, fmt.Sprintf("*%s", tc.c.ext))
+			expFiles, err := filepath.Glob(pattern)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			expOut := strings.Join(expFiles, "\n")
+			res := strings.TrimSpace(buffer.String())
+			if expOut != res {
+				t.Errorf("Exxpected %q, got %q instead\n", expOut, res)
+			}
+
+			filesArchived, err := os.ReadDir(archiveDir)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if len(filesArchived) != tc.nArchive {
+				t.Errorf("Expected %d files archived, got %d instead\n", tc.nArchive, len(filesArchived))
+			}
+
 		})
 	}
 }
