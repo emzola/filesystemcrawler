@@ -7,7 +7,7 @@ import (
 )
 
 type config struct {
-	ext     string
+	ext     []string
 	size    int64
 	list    bool
 	root    string
