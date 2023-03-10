@@ -1,4 +1,4 @@
-package main
+package walk
 
 import (
 	"io"
@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func run(w io.Writer, c *config) error {
+func run(w io.Writer, c *walkConfig) error {
 	var delLogger *log.Logger
 
 	return filepath.Walk(c.root, func(path string, info fs.FileInfo, err error) error {
