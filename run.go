@@ -15,7 +15,7 @@ func run(w io.Writer, c *config) error {
 			return err
 		}
 
-		if filterOut(path, c.ext, c.size, info) {
+		if filterOut(path, c.ext, c.size, c.modDate, info) {
 			return nil
 		}
 

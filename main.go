@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 )
 
 type config struct {
@@ -15,6 +16,7 @@ type config struct {
 	logFile string
 	out     io.Writer
 	archive string
+	modDate time.Time
 }
 
 func main() {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 )
 
 func printUsage(w io.Writer, args []string) {
@@ -15,6 +16,7 @@ func parseArgs(w io.Writer, args []string) (*config, error) {
 	c := &config{}
 	var err error
 	var ext string
+	var modDate string
 
 	fs := flag.NewFlagSet("File System Crawler", flag.ContinueOnError)
 	fs.SetOutput(w)
@@ -25,6 +27,7 @@ func parseArgs(w io.Writer, args []string) (*config, error) {
 	fs.BoolVar(&c.del, "del", false, "Delete files")
 	fs.StringVar(&c.logFile, "log", "", "Log deletes to this file")
 	fs.StringVar(&c.archive, "archive", "", "Archive directory")
+	fs.StringVar(&modDate, "date", "", "Modified date (format: 2006-Jan-02)")
 	fs.Usage = func() {
 		usageMessage := `
 A file system crawler application which crawls into file system directories looking for specific files.
@@ -44,6 +47,14 @@ Usage of %s: <options> [name]`
 	if fs.NArg() != 0 {
 		printUsage(w, []string{"-h"})
 		return c, fmt.Errorf("error: %s", "positional arguments must not be specified")
+	}
+
+	if len(modDate) != 0 {
+		modDate, err := time.Parse("2006-Jan-02", modDate)
+		if err != nil {
+			return c, err
+		}
+		c.modDate = modDate
 	}
 
 	c.ext = strings.Split(ext, "|")

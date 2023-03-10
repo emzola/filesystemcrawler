@@ -8,9 +8,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
-func filterOut(path string, ext []string, minSize int64, info fs.FileInfo) bool {
+func filterOut(path string, ext []string, minSize int64, modDate time.Time, info fs.FileInfo) bool {
 	if info.IsDir() || info.Size() < minSize {
 		return true
 	}
@@ -24,6 +25,10 @@ func filterOut(path string, ext []string, minSize int64, info fs.FileInfo) bool 
 
 	if !extMatch {
 		return true
+	}
+
+	if !modDate.IsZero() {
+		return modDate.After(info.ModTime())
 	}
 
 	return false
