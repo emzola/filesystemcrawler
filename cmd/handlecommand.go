@@ -9,6 +9,8 @@ import (
 	walk "github.com/emzola/filesystemcrawler/cmd/walk"
 )
 
+var ErrInvalidSubCommand = errors.New("invalid subcommand specified")
+
 func printUsage(w io.Writer) {
 	usageMessage := `Usage: File System Crawler [walk|restore] -h.
 
@@ -22,21 +24,21 @@ func HandleCommand(w io.Writer, args []string) error {
 	var err error
 
 	if len(args) < 1 {
-		return ErrInvalidSubCommand
-	}
-
-	switch args[0] {
-	case "walk":
-		err = walk.HandleWalk(w, args[1:])
-	case "restore":
-		err = restore.HandleRestore(w, args[1:])
-	case "-h", "--help":
-		printUsage(w)
-	default:
 		err = ErrInvalidSubCommand
+	} else {
+		switch args[0] {
+		case "walk":
+			err = walk.HandleWalk(w, args[1:])
+		case "restore":
+			err = restore.HandleRestore(w, args[1:])
+		case "-h", "--help":
+			printUsage(w)
+		default:
+			err = ErrInvalidSubCommand
+		}
 	}
 
-	if errors.Is(err, ErrInvalidSubCommand) {
+	if errors.Is(err, ErrInvalidSubCommand) || errors.Is(err, walk.ErrPosArgSpecified) {
 		fmt.Fprintln(w, err)
 		printUsage(w)
 	}

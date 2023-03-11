@@ -1,6 +1,7 @@
 package walk
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -19,6 +20,8 @@ type walkConfig struct {
 	archive string
 	modDate time.Time
 }
+
+var ErrPosArgSpecified = errors.New("positional argument specified")
 
 func HandleWalk(w io.Writer, args []string) error {
 	c := &walkConfig{}
@@ -53,7 +56,7 @@ walk: <options>`
 	}
 
 	if fs.NArg() != 0 {
-		return fmt.Errorf("error: %s", "positional arguments must not be specified")
+		return ErrPosArgSpecified
 	}
 
 	if len(modDate) != 0 {
