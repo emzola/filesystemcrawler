@@ -20,19 +20,19 @@ Be careful when trying this tool on your system. The files will be deleted witho
 -root /tmp/dir/ -list
 ```
 
-### List only log files in directory
+### List only .log files in directory
 
 ```go
 -root /tmp/dir/ -ext .log -list
 ```
 
-### List log and txt files in directory 
+### List .log or .txt files in directory 
 
 ```go
 -root /tmp/dir/ -ext .log|.txt -list
 ```
 
-### List only files large than 20MB
+### List any file large than 20MB
 
 ```go
 -root /tmp/dir/ -size 20 -list
@@ -41,22 +41,22 @@ Be careful when trying this tool on your system. The files will be deleted witho
 ### List only .gz or .pdf files modifed after 10 March 2023
 
 ```go
--root /tmp/dir/ -date 2023-Mar-10 -ext ".gz|.pdf" -list
+-root /tmp/dir/ -date 2023-Mar-10 -ext .gz|.pdf -list
 ```
 
-### Delete all log files in directory
+### Delete all .txt files in directory
 
 ```go
--root /tmp/dir/ -ext .log -del
+-root /tmp/dir/ -ext .txt -del
 ```
 
-### Log file to deleted_files.log log file before delete
+### Log .pdf file to deleted_files.log before delete
 
 ```go
 -root /tmp/dir/ -ext .pdf -log deleted_files.log -del
 ```
 
-### Archive txt file to another directory (e.g. dir_archive) before delete
+### Archive .txt file to another directory (e.g. /dir_archive) before delete
 
 ```go
 -root /tmp/dir/ -ext .txt -log deleted_files.log -archive /dir_archive -del
