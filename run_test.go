@@ -1,4 +1,4 @@
-package walk
+package main
 
 import (
 	"bytes"
@@ -16,14 +16,14 @@ func TestRun(t *testing.T) {
 
 	testCases := []struct {
 		name     string
-		c        walkConfig
+		c        config
 		expected string
 	}{
-		{name: "NoFilter", c: walkConfig{ext: []string{""}, size: 0, list: true, root: "testdata"}, expected: logPath + shPath},
-		{name: "FilterExtensionMatch", c: walkConfig{ext: []string{".log", ".pdf"}, size: 0, list: true, root: "testdata"}, expected: logPath},
-		{name: "FilterExtensionSizeMatch", c: walkConfig{ext: []string{".log"}, size: 10, list: true, root: "testdata"}, expected: logPath},
-		{name: "FilterExtensionSizeNoMatch", c: walkConfig{ext: []string{".log"}, size: 30, list: true, root: "testdata"}, expected: ""},
-		{name: "FilterExtensionNoMatch", c: walkConfig{ext: []string{".gz"}, size: 0, list: true, root: "testdata"}, expected: ""},
+		{name: "NoFilter", c: config{ext: []string{""}, size: 0, list: true, root: "testdata"}, expected: logPath + shPath},
+		{name: "FilterExtensionMatch", c: config{ext: []string{".log", ".pdf"}, size: 0, list: true, root: "testdata"}, expected: logPath},
+		{name: "FilterExtensionSizeMatch", c: config{ext: []string{".log"}, size: 10, list: true, root: "testdata"}, expected: logPath},
+		{name: "FilterExtensionSizeNoMatch", c: config{ext: []string{".log"}, size: 30, list: true, root: "testdata"}, expected: ""},
+		{name: "FilterExtensionNoMatch", c: config{ext: []string{".gz"}, size: 0, list: true, root: "testdata"}, expected: ""},
 	}
 
 	for _, tc := range testCases {
@@ -65,7 +65,7 @@ func createTempDir(t *testing.T, files map[string]int) (dirname string, cleanup 
 func TestRunDelExtension(t *testing.T) {
 	testCases := []struct {
 		name        string
-		c           walkConfig
+		c           config
 		extNoDelete string
 		nDelete     int
 		nNoDelete   int
@@ -73,7 +73,7 @@ func TestRunDelExtension(t *testing.T) {
 	}{
 		{
 			name:        "DeleteExtensionNoMatch",
-			c:           walkConfig{ext: []string{".log"}, del: true},
+			c:           config{ext: []string{".log"}, del: true},
 			extNoDelete: ".gz",
 			nDelete:     0,
 			nNoDelete:   10,
@@ -81,7 +81,7 @@ func TestRunDelExtension(t *testing.T) {
 		},
 		{
 			name:        "DeleteExtensionMatch",
-			c:           walkConfig{ext: []string{".log"}, del: true},
+			c:           config{ext: []string{".log"}, del: true},
 			extNoDelete: "",
 			nDelete:     10,
 			nNoDelete:   0,
@@ -89,7 +89,7 @@ func TestRunDelExtension(t *testing.T) {
 		},
 		{
 			name:        "DeleteExtensionMixed",
-			c:           walkConfig{ext: []string{".log"}, del: true},
+			c:           config{ext: []string{".log"}, del: true},
 			extNoDelete: ".gz",
 			nDelete:     5,
 			nNoDelete:   5,
@@ -143,28 +143,28 @@ func TestRunDelExtension(t *testing.T) {
 func TestRunArchive(t *testing.T) {
 	testCases := []struct {
 		name         string
-		c            walkConfig
+		c            config
 		extNoArchive string
 		nArchive     int
 		nNoArchive   int
 	}{
 		{
 			name:         "ArchiveExtensionNoMatch",
-			c:            walkConfig{ext: []string{".log"}},
+			c:            config{ext: []string{".log"}},
 			extNoArchive: ".gz",
 			nArchive:     0,
 			nNoArchive:   10,
 		},
 		{
 			name:         "ArchiveExtensionMatch",
-			c:            walkConfig{ext: []string{".log"}},
+			c:            config{ext: []string{".log"}},
 			extNoArchive: "",
 			nArchive:     10,
 			nNoArchive:   0,
 		},
 		{
 			name:         "ArchiveExtensionMixed",
-			c:            walkConfig{ext: []string{".log"}},
+			c:            config{ext: []string{".log"}},
 			extNoArchive: ".gz",
 			nArchive:     5,
 			nNoArchive:   5,

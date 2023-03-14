@@ -1,4 +1,4 @@
-package walk
+package main
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type walkConfig struct {
+type config struct {
 	ext     []string
 	size    int64
 	list    bool
@@ -23,13 +23,13 @@ type walkConfig struct {
 
 var ErrPosArgSpecified = errors.New("positional argument specified")
 
-func HandleWalk(w io.Writer, args []string) error {
-	c := &walkConfig{}
+func parseArgs(w io.Writer, args []string) error {
+	c := &config{}
 	var err error
 	var ext string
 	var modDate string
 
-	fs := flag.NewFlagSet("walk", flag.ContinueOnError)
+	fs := flag.NewFlagSet("File System Crawler", flag.ContinueOnError)
 	fs.SetOutput(w)
 	fs.StringVar(&c.root, "root", ".", "Root directory to start")
 	fs.StringVar(&ext, "ext", "", "Filter by file extension")
@@ -40,11 +40,10 @@ func HandleWalk(w io.Writer, args []string) error {
 	fs.StringVar(&c.logFile, "log", "", "Log file deletes to this file")
 	fs.BoolVar(&c.del, "del", false, "Delete files")
 	fs.Usage = func() {
-		usageMessage := `
-walk: Finds files which match a specific criteria and executes actions.
+		usageMessage := `A command-line tool which crawls into file system directories, find files and executes actions.
 
-walk: <options>`
-		fmt.Fprint(w, usageMessage)
+Usage of %s: <options> [name]`
+		fmt.Fprint(w, usageMessage, fs.Name())
 		fmt.Fprintln(w)
 		fmt.Fprintln(w, "Options: ")
 		fs.PrintDefaults()
